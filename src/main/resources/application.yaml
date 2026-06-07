@@ -17,3 +17,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+jwt:
+  token:
+    secretKey: ${JWT_TOKEN_SECRET_KEY}
+    expiration:
+      access: ${JWT_ACCESS_EXPIRATION}
+      refresh: ${JWT_REFRESH_EXPIRATION}
