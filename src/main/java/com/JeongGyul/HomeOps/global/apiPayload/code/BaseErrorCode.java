@@ -1,8 +1,8 @@
-package com.JeongGyul.HomeOps.global.ApiPayload.code;
+package com.JeongGyul.HomeOps.global.apiPayload.code;
 
 import org.springframework.http.HttpStatus;
 
-public interface BaseCode {
+public interface BaseErrorCode {
 
     HttpStatus getStatus();
     String getCode();

@@ -1,4 +1,4 @@
-package com.JeongGyul.HomeOps.global.ApiPayload.code;
+package com.JeongGyul.HomeOps.global.apiPayload.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum GeneralSuccessCode implements BaseCode {
+public enum GeneralSuccessCode implements BaseSuccessCode {
 
     OK(HttpStatus.OK, "COMMON200", "요청이 성공적으로 처리되었습니다."),
     CREATED(HttpStatus.CREATED, "COMMON201", "리소스가 성공적으로 생성되었습니다.")
