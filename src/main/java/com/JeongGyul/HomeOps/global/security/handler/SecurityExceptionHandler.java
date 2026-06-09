@@ -4,9 +4,11 @@ import com.JeongGyul.HomeOps.global.apiPayload.ApiResponse;
 import com.JeongGyul.HomeOps.global.apiPayload.code.BaseErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
 public class SecurityExceptionHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
