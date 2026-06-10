@@ -16,6 +16,13 @@ public enum AuthErrorCode implements BaseErrorCode {
     NOT_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH401_4", "리프레시 토큰이 아닙니다."),
     TOKEN_IN_BLACKLIST(HttpStatus.UNAUTHORIZED, "AUTH401_5", "이미 로그아웃된 토큰입니다. 다시 로그인해주세요."),
     INVALID_TOKEN_FORMAT(HttpStatus.UNAUTHORIZED, "AUTH401_6", "유효하지 않은 토큰 형식입니다."),
+
+    // Login
+    LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "AUTH401_7", "아이디 또는 비밀번호가 올바르지 않습니다."),
+
+    // Refresh Token
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH401_8", "리프레시 토큰이 만료되었거나 존재하지 않습니다."),
+    REFRESH_TOKEN_MISMATCH(HttpStatus.UNAUTHORIZED, "AUTH401_9", "리프레시 토큰이 일치하지 않습니다."),
     ;
 
     private final HttpStatus status;

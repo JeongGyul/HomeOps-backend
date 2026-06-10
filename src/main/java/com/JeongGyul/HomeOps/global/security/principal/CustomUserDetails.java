@@ -2,7 +2,6 @@ package com.JeongGyul.HomeOps.global.security.principal;
 
 import com.JeongGyul.HomeOps.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -25,6 +24,10 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
+        return String.valueOf(member.getId());
+    }
+
+    public String getDisplayUsername() {
         return member.getUsername();
     }
 }

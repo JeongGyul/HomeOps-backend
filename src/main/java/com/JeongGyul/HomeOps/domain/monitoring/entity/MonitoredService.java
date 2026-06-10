@@ -29,13 +29,21 @@ public class MonitoredService extends BaseEntity {
 
     @Builder.Default
     @Column(name = "check_interval", nullable = false)
-    private int checkInterval = 10;
+    private int checkInterval = 30;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean paused = false;
 
     public void update(String name, CheckType checkType, String target, int checkInterval) {
         this.name = name;
         this.checkType = checkType;
         this.target = target;
         this.checkInterval = checkInterval;
+    }
+
+    public void togglePause() {
+        this.paused = !this.paused;
     }
 
 }

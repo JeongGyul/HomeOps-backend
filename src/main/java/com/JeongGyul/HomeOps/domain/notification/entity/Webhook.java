@@ -27,9 +27,22 @@ public class Webhook extends BaseEntity {
     @Column(nullable = false, length = 500)
     private String url;
 
-    public void update(String name, String url) {
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean enabled = true;
+
+    @Builder.Default
+    @Column(name = "target_all", nullable = false)
+    private boolean targetAll = true;
+
+    public void update(String name, String url, boolean targetAll) {
         this.name = name;
         this.url = url;
+        this.targetAll = targetAll;
+    }
+
+    public void toggleEnabled() {
+        this.enabled = !this.enabled;
     }
 
 }
