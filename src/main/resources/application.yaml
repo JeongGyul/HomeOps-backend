@@ -12,7 +12,7 @@ spring:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD}
+      password: ${REDIS_PASSWORD:}
 
   jpa:
     database: mysql
@@ -23,6 +23,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+admin:
+  username: ${ADMIN_USERNAME:admin}
+  password: ${ADMIN_PASSWORD:homeops1234}
+
 jwt:
   token:
     secretKey: ${JWT_TOKEN_SECRET_KEY}
