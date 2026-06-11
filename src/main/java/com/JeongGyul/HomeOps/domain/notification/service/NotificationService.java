@@ -1,14 +1,17 @@
 package com.JeongGyul.HomeOps.domain.notification.service;
 
 import com.JeongGyul.HomeOps.domain.monitoring.event.ServiceCrashedEvent;
+import com.JeongGyul.HomeOps.domain.monitoring.event.ServiceDeletedEvent;
 import com.JeongGyul.HomeOps.domain.monitoring.event.ServiceRecoveredEvent;
 import com.JeongGyul.HomeOps.domain.notification.entity.Webhook;
+import com.JeongGyul.HomeOps.domain.notification.repository.ServiceWebhookRepository;
 import com.JeongGyul.HomeOps.domain.settings.repository.AppSettingsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -20,8 +23,15 @@ import java.util.Map;
 public class NotificationService {
 
     private final WebhookService webhookService;
+    private final ServiceWebhookRepository serviceWebhookRepository;
     private final AppSettingsRepository settingsRepository;
     private final RestTemplate restTemplate;
+
+    @Transactional
+    @EventListener
+    public void onServiceDeleted(ServiceDeletedEvent event) {
+        serviceWebhookRepository.deleteAllByMonitoredServiceId(event.getServiceId());
+    }
 
     @Async
     @EventListener

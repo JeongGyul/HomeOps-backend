@@ -2,10 +2,13 @@ package com.JeongGyul.HomeOps.domain.monitoring.service;
 
 import com.JeongGyul.HomeOps.domain.monitoring.dto.*;
 import com.JeongGyul.HomeOps.domain.monitoring.entity.MonitoredService;
+import com.JeongGyul.HomeOps.domain.monitoring.event.ServiceDeletedEvent;
 import com.JeongGyul.HomeOps.domain.monitoring.exception.MonitoringErrorCode;
+import com.JeongGyul.HomeOps.domain.monitoring.repository.HealthCheckLogRepository;
 import com.JeongGyul.HomeOps.domain.monitoring.repository.MonitoredServiceRepository;
 import com.JeongGyul.HomeOps.global.apiPayload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +23,9 @@ public class MonitoredServiceService {
     private static final String LATENCY_KEY = "service:%d:latency";
 
     private final MonitoredServiceRepository serviceRepository;
+    private final HealthCheckLogRepository healthCheckLogRepository;
     private final StringRedisTemplate redisTemplate;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public List<ServiceResponse> getAll() {
@@ -67,6 +72,8 @@ public class MonitoredServiceService {
     public void delete(Long id) {
         MonitoredService service = findById(id);
         clearStatusCache(id);
+        healthCheckLogRepository.deleteAllByMonitoredServiceId(id);
+        eventPublisher.publishEvent(new ServiceDeletedEvent(id));
         serviceRepository.delete(service);
     }
 
