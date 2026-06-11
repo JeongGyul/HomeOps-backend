@@ -10,6 +10,8 @@ import java.net.NetworkInterface;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -65,7 +67,7 @@ public class ResourceCollectorService {
             for (String line : output.split("\n")) {
                 if (line.startsWith("Mach Virtual Memory Statistics")) {
                     // "page size of X bytes" 추출
-                    java.util.regex.Matcher m = java.util.regex.Pattern
+                    Matcher m = Pattern
                             .compile("page size of (\\d+) bytes").matcher(line);
                     if (m.find()) pageSize = Long.parseLong(m.group(1));
                 } else if (line.startsWith("Pages free:")) {
