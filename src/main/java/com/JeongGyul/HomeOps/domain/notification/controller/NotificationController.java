@@ -1,7 +1,5 @@
 package com.JeongGyul.HomeOps.domain.notification.controller;
 
-import com.JeongGyul.HomeOps.domain.monitoring.entity.HeathCheckLog;
-import com.JeongGyul.HomeOps.domain.monitoring.repository.HealthCheckLogRepository;
 import com.JeongGyul.HomeOps.domain.notification.dto.*;
 import com.JeongGyul.HomeOps.domain.notification.exception.NotificationErrorCode;
 import com.JeongGyul.HomeOps.domain.notification.service.NotificationService;
@@ -12,8 +10,6 @@ import com.JeongGyul.HomeOps.global.apiPayload.exception.GeneralException;
 import com.JeongGyul.HomeOps.global.security.principal.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +23,6 @@ public class NotificationController implements NotificationControllerDocs {
 
     private final WebhookService webhookService;
     private final NotificationService notificationService;
-    private final HealthCheckLogRepository healthCheckLogRepository;
 
     @Override
     @GetMapping("/notifications")
@@ -35,12 +30,8 @@ public class NotificationController implements NotificationControllerDocs {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "40") int size
     ) {
-        Page<HeathCheckLog> logs = healthCheckLogRepository.findAllByOrderByCreatedAtDesc(
-                PageRequest.of(page, size));
-        List<NotificationHistoryResponse> result = logs.stream()
-                .map(NotificationHistoryResponse::from)
-                .toList();
-        return ResponseEntity.ok(ApiResponse.onSuccess(GeneralSuccessCode.OK, result));
+        return ResponseEntity.ok(ApiResponse.onSuccess(
+                GeneralSuccessCode.OK, notificationService.getHistory(page, size)));
     }
 
     @Override

@@ -3,12 +3,15 @@ package com.JeongGyul.HomeOps.domain.notification.service;
 import com.JeongGyul.HomeOps.domain.monitoring.event.ServiceCrashedEvent;
 import com.JeongGyul.HomeOps.domain.monitoring.event.ServiceDeletedEvent;
 import com.JeongGyul.HomeOps.domain.monitoring.event.ServiceRecoveredEvent;
+import com.JeongGyul.HomeOps.domain.monitoring.repository.HealthCheckLogRepository;
+import com.JeongGyul.HomeOps.domain.notification.dto.NotificationHistoryResponse;
 import com.JeongGyul.HomeOps.domain.notification.entity.Webhook;
 import com.JeongGyul.HomeOps.domain.notification.repository.ServiceWebhookRepository;
 import com.JeongGyul.HomeOps.domain.settings.repository.AppSettingsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +27,17 @@ public class NotificationService {
 
     private final WebhookService webhookService;
     private final ServiceWebhookRepository serviceWebhookRepository;
+    private final HealthCheckLogRepository healthCheckLogRepository;
     private final AppSettingsRepository settingsRepository;
     private final RestTemplate restTemplate;
+
+    @Transactional(readOnly = true)
+    public List<NotificationHistoryResponse> getHistory(int page, int size) {
+        return healthCheckLogRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(page, size))
+                .stream()
+                .map(NotificationHistoryResponse::from)
+                .toList();
+    }
 
     @Transactional
     @EventListener
