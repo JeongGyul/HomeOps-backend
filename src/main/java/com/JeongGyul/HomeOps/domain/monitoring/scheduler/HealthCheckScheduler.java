@@ -37,7 +37,7 @@ public class HealthCheckScheduler {
     private final StringRedisTemplate redisTemplate;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 5000)
     public void runHealthChecks() {
         int failThreshold = settingsRepository.findById(1L)
                 .map(s -> s.getFailThreshold())
