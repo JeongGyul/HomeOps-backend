@@ -2,7 +2,6 @@ package com.JeongGyul.HomeOps.domain.notification.controller;
 
 import com.JeongGyul.HomeOps.domain.notification.dto.*;
 import com.JeongGyul.HomeOps.global.apiPayload.ApiResponse;
-import com.JeongGyul.HomeOps.global.security.principal.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -55,7 +54,7 @@ public interface NotificationControllerDocs {
     );
 
     @Operation(summary = "Webhook 목록 조회",
-            description = "현재 로그인한 멤버의 Webhook 목록과 연결된 서비스 ID를 반환합니다.")
+            description = "등록된 Webhook 목록과 연결된 서비스 ID를 반환합니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200", description = "조회 성공",
@@ -79,7 +78,7 @@ public interface NotificationControllerDocs {
                                     }
                                     """)))
     })
-    ResponseEntity<ApiResponse<List<WebhookResponse>>> getWebhooks(CustomUserDetails userDetails);
+    ResponseEntity<ApiResponse<List<WebhookResponse>>> getWebhooks();
 
     @Operation(summary = "Webhook 등록",
             description = "Discord Webhook을 등록합니다.\n\n" +
@@ -107,7 +106,7 @@ public interface NotificationControllerDocs {
                                     """))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "유효성 검사 실패")
     })
-    ResponseEntity<ApiResponse<WebhookResponse>> createWebhook(WebhookCreateRequest request, CustomUserDetails userDetails);
+    ResponseEntity<ApiResponse<WebhookResponse>> createWebhook(WebhookCreateRequest request);
 
     @Operation(summary = "Webhook 수정",
             description = "Webhook 이름, URL, 대상 서비스를 수정합니다.")
@@ -127,8 +126,7 @@ public interface NotificationControllerDocs {
     })
     ResponseEntity<ApiResponse<WebhookResponse>> updateWebhook(
             @Parameter(description = "Webhook ID", example = "1") Long id,
-            WebhookUpdateRequest request,
-            CustomUserDetails userDetails
+            WebhookUpdateRequest request
     );
 
     @Operation(summary = "Webhook 삭제",
@@ -138,8 +136,7 @@ public interface NotificationControllerDocs {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Webhook을 찾을 수 없음")
     })
     ResponseEntity<ApiResponse<Void>> deleteWebhook(
-            @Parameter(description = "Webhook ID", example = "1") Long id,
-            CustomUserDetails userDetails
+            @Parameter(description = "Webhook ID", example = "1") Long id
     );
 
     @Operation(summary = "Webhook 활성화 / 비활성화 토글",
@@ -166,8 +163,7 @@ public interface NotificationControllerDocs {
                                     """)))
     })
     ResponseEntity<ApiResponse<WebhookResponse>> toggleWebhook(
-            @Parameter(description = "Webhook ID", example = "1") Long id,
-            CustomUserDetails userDetails
+            @Parameter(description = "Webhook ID", example = "1") Long id
     );
 
     @Operation(summary = "Webhook 테스트 메시지 전송",
@@ -177,7 +173,6 @@ public interface NotificationControllerDocs {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Webhook을 찾을 수 없음")
     })
     ResponseEntity<ApiResponse<Void>> testWebhook(
-            @Parameter(description = "Webhook ID", example = "1") Long id,
-            CustomUserDetails userDetails
+            @Parameter(description = "Webhook ID", example = "1") Long id
     );
 }

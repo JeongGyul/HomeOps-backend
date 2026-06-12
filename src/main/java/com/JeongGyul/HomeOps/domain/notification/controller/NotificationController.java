@@ -1,17 +1,13 @@
 package com.JeongGyul.HomeOps.domain.notification.controller;
 
 import com.JeongGyul.HomeOps.domain.notification.dto.*;
-import com.JeongGyul.HomeOps.domain.notification.exception.NotificationErrorCode;
 import com.JeongGyul.HomeOps.domain.notification.service.NotificationService;
 import com.JeongGyul.HomeOps.domain.notification.service.WebhookService;
 import com.JeongGyul.HomeOps.global.apiPayload.ApiResponse;
 import com.JeongGyul.HomeOps.global.apiPayload.code.GeneralSuccessCode;
-import com.JeongGyul.HomeOps.global.apiPayload.exception.GeneralException;
-import com.JeongGyul.HomeOps.global.security.principal.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,70 +32,47 @@ public class NotificationController implements NotificationControllerDocs {
 
     @Override
     @GetMapping("/webhooks")
-    public ResponseEntity<ApiResponse<List<WebhookResponse>>> getWebhooks(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        Long memberId = Long.parseLong(userDetails.getUsername());
-        return ResponseEntity.ok(ApiResponse.onSuccess(
-                GeneralSuccessCode.OK, webhookService.getAll(memberId)));
+    public ResponseEntity<ApiResponse<List<WebhookResponse>>> getWebhooks() {
+        return ResponseEntity.ok(ApiResponse.onSuccess(GeneralSuccessCode.OK, webhookService.getAll()));
     }
 
     @Override
     @PostMapping("/webhooks")
     public ResponseEntity<ApiResponse<WebhookResponse>> createWebhook(
-            @Valid @RequestBody WebhookCreateRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @Valid @RequestBody WebhookCreateRequest request
     ) {
-        Long memberId = Long.parseLong(userDetails.getUsername());
         return ResponseEntity.status(201).body(ApiResponse.onSuccess(
-                GeneralSuccessCode.CREATED, webhookService.create(memberId, request)));
+                GeneralSuccessCode.CREATED, webhookService.create(request)));
     }
 
     @Override
     @PutMapping("/webhooks/{id}")
     public ResponseEntity<ApiResponse<WebhookResponse>> updateWebhook(
             @PathVariable Long id,
-            @Valid @RequestBody WebhookUpdateRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @Valid @RequestBody WebhookUpdateRequest request
     ) {
-        Long memberId = Long.parseLong(userDetails.getUsername());
         return ResponseEntity.ok(ApiResponse.onSuccess(
-                GeneralSuccessCode.OK, webhookService.update(id, memberId, request)));
+                GeneralSuccessCode.OK, webhookService.update(id, request)));
     }
 
     @Override
     @DeleteMapping("/webhooks/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteWebhook(
-            @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        Long memberId = Long.parseLong(userDetails.getUsername());
-        webhookService.delete(id, memberId);
+    public ResponseEntity<ApiResponse<Void>> deleteWebhook(@PathVariable Long id) {
+        webhookService.delete(id);
         return ResponseEntity.ok(ApiResponse.onSuccess(GeneralSuccessCode.OK, null));
     }
 
     @Override
     @PatchMapping("/webhooks/{id}/toggle")
-    public ResponseEntity<ApiResponse<WebhookResponse>> toggleWebhook(
-            @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        Long memberId = Long.parseLong(userDetails.getUsername());
+    public ResponseEntity<ApiResponse<WebhookResponse>> toggleWebhook(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.onSuccess(
-                GeneralSuccessCode.OK, webhookService.toggle(id, memberId)));
+                GeneralSuccessCode.OK, webhookService.toggle(id)));
     }
 
     @Override
     @PostMapping("/webhooks/{id}/test")
-    public ResponseEntity<ApiResponse<Void>> testWebhook(
-            @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        Long memberId = Long.parseLong(userDetails.getUsername());
-        WebhookResponse webhook = webhookService.getAll(memberId).stream()
-                .filter(w -> w.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new GeneralException(NotificationErrorCode.WEBHOOK_NOT_FOUND));
+    public ResponseEntity<ApiResponse<Void>> testWebhook(@PathVariable Long id) {
+        WebhookResponse webhook = webhookService.getById(id);
         notificationService.sendTestMessage(webhook.url(), webhook.name());
         return ResponseEntity.ok(ApiResponse.onSuccess(GeneralSuccessCode.OK, null));
     }
