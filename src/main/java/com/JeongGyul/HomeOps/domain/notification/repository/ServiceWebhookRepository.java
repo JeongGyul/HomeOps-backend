@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface ServiceWebhookRepository extends JpaRepository<ServiceWebhook, Long> {
     List<ServiceWebhook> findAllByWebhookId(Long webhookId);
-    List<ServiceWebhook> findAllByMonitoredServiceId(Long serviceId);
     void deleteAllByWebhookId(Long webhookId);
 
     @Modifying
